@@ -1,16 +1,25 @@
-# This is a sample Python script.
+import telebot
+from settings import bot_token
+from faunahelper import FaunaHelper
+from faunadb.client import FaunaClient
+from settings import fauna_key
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+
+#def greeting(name):
+#    requests.get('https://api.telegram.org/bot%s/sendMessage' % bot_token,
+#                 params={'chat_id': 397472277, 'text': f'Hi, {name}'})
+
+bot = telebot.TeleBot(bot_token)
+faunahelper = FaunaHelper(FaunaClient(fauna_key))
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+@bot.message_handler(commands=['getdays'])
+def getdays(message):
+    chat_id = message.chat.id
+    bot.send_message(chat_id, "До конца курса осталось %s" % str(faunahelper.get_days_by_telegram_id(chat_id) + 1))
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+   bot.polling(none_stop=True)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
